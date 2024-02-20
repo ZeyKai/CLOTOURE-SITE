@@ -1,12 +1,9 @@
 import React, { useState, useCallback, useRef } from 'react';
 import Webcam from 'react-webcam';
-import './CameraComponent.css'; // Import CSS file for styling
-import axios from 'axios'; // Import Axios
 
 function CameraComponent() {
   const webcamRef = useRef(null);
   const [capturedImage, setCapturedImage] = useState(null);
-  const [uploadedImage, setUploadedImage] = useState(null);
 
   const capture = useCallback(() => {
     const imageSrc = webcamRef.current.getScreenshot();
@@ -17,56 +14,35 @@ function CameraComponent() {
     const file = event.target.files[0];
     const reader = new FileReader();
     reader.onloadend = () => {
-      setUploadedImage(reader.result);
+      setCapturedImage(reader.result);
     };
     if (file) {
       reader.readAsDataURL(file);
     }
   };
 
-  const uploadImage = async () => {
-    try {
-      const formData = new FormData();
-      formData.append('image', uploadedImage);
-
-      const response = await axios.post('YOUR_UPLOAD_URL', formData);
-
-      console.log('Image uploaded successfully!', response.data);
-      // Reset uploadedImage state
-      setUploadedImage(null);
-    } catch (error) {
-      console.error('Error uploading image:', error);
-    }
-  };
-
   return (
-    <div className="camera-container">
-      <h1 className="title">CLOTOURE DEMO</h1>
-      <div className="webcam-container">
+    <div style={{ textAlign: 'center', backgroundColor: '#000', minHeight: '100vh', display: 'flex', flexDirection: 'column', justifyContent: 'center' }}>
+      <h1 style={{ color: '#fff', marginBottom: '20px', fontFamily: 'Arial, sans-serif' }}>Clotoure Demo</h1>
+      <div style={{ margin: '0 auto', position: 'relative', width: '400px', height: '300px' }}>
         <Webcam
           audio={false}
           ref={webcamRef}
           screenshotFormat="image/jpeg"
           className="webcam"
+          mirrored={true}
+          style={{ position: 'absolute', top: '50%', left: '50%', transform: 'translate(-50%, -50%)' }}
         />
+        <div style={{ marginTop: 'calc(300px + 1in)', position: 'relative' }}>
+          <button style={{ padding: '10px 20px', fontSize: '1rem', backgroundColor: '#007bff', color: '#fff', borderRadius: '5px', cursor: 'pointer', transition: 'background-color 0.3s ease' }} onClick={capture}>Capture</button>
+          <input type="file" accept="image/*" onChange={handleFileUpload} style={{ marginLeft: '10px', padding: '10px 20px', fontSize: '1rem', backgroundColor: '#007bff', color: '#fff', borderRadius: '5px', cursor: 'pointer', transition: 'background-color 0.3s ease' }} />
+        </div>
       </div>
-      <button className="capture-button" onClick={capture}>Capture</button>
-      <input type="file" accept="image/*" onChange={handleFileUpload} />
-      {capturedImage && !uploadedImage && (
-        <div className="captured-image-container">
-          <h2 className="captured-image-title">YOUR PHOTO!</h2>
-          <img src={capturedImage} alt="Captured" className="captured-image" />
+      {capturedImage && (
+        <div style={{ marginTop: '20px' }}>
+          <h2 style={{ color: '#fff', marginBottom: '10px' }}>YOUR PHOTO!</h2>
+          <img src={capturedImage} alt="Captured" style={{ width: '300px', height: 'auto', border: '2px solid #ccc', borderRadius: '10px', margin: '0 auto' }} />
         </div>
-      )}
-      {uploadedImage && (
-        <div className="captured-image-container">
-          <h2 className="captured-image-title">YOUR UPLOADED PHOTO!</h2>
-          <img src={uploadedImage} alt="Uploaded" className="captured-image" />
-          <button className="upload-button" onClick={uploadImage}>Upload Image</button>
-        </div>
-      )}
-      {!capturedImage && !uploadedImage && (
-        <div className="placeholder-div"></div>
       )}
     </div>
   );
