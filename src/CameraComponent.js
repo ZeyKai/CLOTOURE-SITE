@@ -1,4 +1,4 @@
-  import React, { useState, useCallback, useRef, useEffect } from 'react';
+import React, { useState, useCallback, useRef, useEffect } from 'react';
 import Webcam from 'react-webcam';
 
 function CameraComponent() {
@@ -31,7 +31,7 @@ function CameraComponent() {
 
   return (
     <div style={{ textAlign: 'center', backgroundColor: '#000', minHeight: '100vh', display: 'flex', flexDirection: 'column', justifyContent: 'center', height: '200vh', overflow: 'auto'}}>
-    <span style={{ color: '#fff', marginBottom: '20px', fontFamily: 'Arial, sans-serif', fontSize: '2rem', position: 'fixed', top: '20px', left: '50%', transform: 'translateX(-50%)', zIndex: '2' }}>Clotoure Demo</span>
+    <span style={{ color: '#fff', marginBottom: '200px', fontFamily: 'Arial, sans-serif', fontSize: '2rem', display: 'block', margin: '0 auto', zIndex: '2', marginTop: '10px' }}>Clotoure Demo</span>
 <div style={{ margin: '0 auto', position: 'relative', width: '400px', height: '300px', zIndex: '1', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center' }}>
         <Webcam
           audio={false}
@@ -39,7 +39,7 @@ function CameraComponent() {
           screenshotFormat="image/jpeg"
           className="webcam"
           mirrored={true}
-          style={{ position: 'absolute', top: '50%', left: '50%', transform: 'translate(-50%, -50%)', zIndex: '1' }}
+          style={{ position: 'absolute', top: '20%', left: '50%', transform: 'translate(-50%, -50%)', zIndex: '1' }}
         />
         <div style={{ marginTop: 'calc(300px + 1in)', position: 'relative', zIndex: '1', display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
           <button style={{ marginRight: '10px', padding: '10px 20px', fontSize: '1rem', backgroundColor: '#000', color: '#fff', borderRadius: '5px', cursor: 'pointer', transition: 'background-color 0.3s ease', zIndex: '1' }} onClick={capture}>Capture</button>
