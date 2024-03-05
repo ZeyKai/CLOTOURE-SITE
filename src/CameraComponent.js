@@ -30,9 +30,9 @@ function CameraComponent() {
   }, [capturedImage]);
 
   return (
-    <div style={{ textAlign: 'center', backgroundColor: '#fff', minHeight: '100vh', display: 'flex', flexDirection: 'column', justifyContent: 'center' }}>
-      <h1 style={{ color: '#000', marginBottom: '20px', fontFamily: 'Arial, sans-serif', fontSize: '2rem', position: 'fixed', top: '20px', left: '50%', transform: 'translateX(-50%)', zIndex: '2' }}>Clotoure Demo</h1>
-      <div style={{ margin: '0 auto', position: 'relative', width: '400px', height: '300px', zIndex: '1', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center' }}>
+    <div style={{ textAlign: 'center', backgroundColor: '#000', minHeight: '100vh', display: 'flex', flexDirection: 'column', justifyContent: 'center', height: '200vh', overflow: 'auto'}}>
+    <span style={{ color: '#fff', marginBottom: '20px', fontFamily: 'Arial, sans-serif', fontSize: '2rem', position: 'fixed', top: '20px', left: '50%', transform: 'translateX(-50%)', zIndex: '2' }}>Clotoure Demo</span>
+<div style={{ margin: '0 auto', position: 'relative', width: '400px', height: '300px', zIndex: '1', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center' }}>
         <Webcam
           audio={false}
           ref={webcamRef}
@@ -51,7 +51,7 @@ function CameraComponent() {
       </div>
       {capturedImage && (
         <div id="photo-section" style={{ marginTop: '200px', zIndex: '1' }}>
-          <h2 style={{ color: '#000', marginBottom: '10px' }}>YOUR PHOTO!</h2>
+          <h2 style={{ color: '#fff', marginBottom: '10px' }}>YOUR PHOTO!</h2>
           <img src={capturedImage} alt="Captured" style={{ width: '300px', height: 'auto', border: '2px solid #ccc', borderRadius: '10px', margin: '0 auto' }} />
         </div>
       )}
