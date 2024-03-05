@@ -31,7 +31,7 @@ function CameraComponent() {
 
   return (
     <div style={{ textAlign: 'center', backgroundColor: '#000', minHeight: '100vh', display: 'flex', flexDirection: 'column', justifyContent: 'center', height: '200vh', overflow: 'auto'}}>
-    <span style={{ color: '#fff', marginBottom: '200px', fontFamily: 'Arial, sans-serif', fontSize: '2rem', display: 'block', margin: '0 auto', zIndex: '2', marginTop: '10px' }}>Clotoure Demo</span>
+    <span style={{ color: '#fff', marginBottom: '300px', fontFamily: 'Arial, sans-serif', fontSize: '2rem', display: 'block', margin: '0 auto', zIndex: '2', marginTop: '10px' }}>Clotoure Demo</span>
 <div style={{ margin: '0 auto', position: 'relative', width: '400px', height: '300px', zIndex: '1', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center' }}>
         <Webcam
           audio={false}
