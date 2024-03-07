@@ -1,17 +1,34 @@
 import React, { useState, useCallback, useRef, useEffect } from 'react';
+import { Button } from '@mui/material';
 import Webcam from 'react-webcam';
+
+import Axios from 'axios';
+
+
 
 function CameraComponent() {
   const webcamRef = useRef(null);
   const [capturedImage, setCapturedImage] = useState(null);
+  const [imageFile, setImageFile] = useState(null);
+  const [fileName, setFileName] = useState('');
 
   const capture = useCallback(() => {
     const imageSrc = webcamRef.current.getScreenshot();
     setCapturedImage(imageSrc);
+    let blobFile = base64toImage(imageSrc);
+    //webcamRef
+    //let blobFileName = ;
+    let file = new File([blobFile], 'screenCapture.jpeg');
+    setImageFile(file);
+    setFileName('screenCapture.jpeg')
   }, [webcamRef]);
 
   const handleFileUpload = (event) => {
     const file = event.target.files[0];
+    
+    setImageFile(file);
+    setFileName(file.name);
+    console.log(file.name);
     const reader = new FileReader();
     reader.onloadend = () => {
       setCapturedImage(reader.result);
@@ -20,6 +37,44 @@ function CameraComponent() {
       reader.readAsDataURL(file);
     }
   };
+
+
+  const base64toImage = function (image){
+    const byteString = atob(image.split(',')[1]);
+    const ab = new ArrayBuffer(byteString.length);
+    const ia = new Uint8Array(ab);
+    for (let i = 0; i < byteString.length; i += 1) {
+      ia[i] = byteString.charCodeAt(i);
+    }
+    const newBlob = new Blob([ab], {
+      type: 'image/jpeg',
+    });
+    return newBlob;
+  };
+
+
+  const submitImage = () =>{
+
+    const formData = new FormData();
+    var im = imageFile;
+    formData.append('file', im, fileName);
+    console.log(fileName);
+    
+    const url = "http://localhost:5000/segment";
+
+    Axios.post(url, formData, {
+      headers: {
+        'Content-Type': 'multipart/form-data'
+      }
+    })
+    .then(response => {
+      console.log(response.data);
+    })
+    .catch(error => {
+      console.log(error);
+    });
+  };
+
 
   useEffect(() => {
     // Scroll to the photo when captured or uploaded
@@ -49,11 +104,14 @@ function CameraComponent() {
           </label>
         </div>
       </div>
+      
       {capturedImage && (
         <div id="photo-section" style={{ marginTop: '200px', zIndex: '1' }}>
           <h2 style={{ color: '#fff', marginBottom: '10px' }}>YOUR PHOTO!</h2>
           <img src={capturedImage} alt="Captured" style={{ width: '300px', height: 'auto', border: '2px solid #ccc', borderRadius: '10px', margin: '0 auto' }} />
+          <button style={{ marginRight: '10px', padding: '10px 20px', fontSize: '1rem', backgroundColor: '#000', color: '#fff', borderRadius: '5px', cursor: 'pointer', transition: 'background-color 0.3s ease', zIndex: '1' }} onClick={submitImage}>Segment</button>
         </div>
+        
       )}
     </div>
   );
