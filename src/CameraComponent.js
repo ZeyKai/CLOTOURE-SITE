@@ -1,34 +1,28 @@
 import React, { useState, useCallback, useRef, useEffect } from 'react';
 import { Button } from '@mui/material';
 import Webcam from 'react-webcam';
-
 import Axios from 'axios';
-
-
 
 function CameraComponent() {
   const webcamRef = useRef(null);
   const [capturedImage, setCapturedImage] = useState(null);
   const [imageFile, setImageFile] = useState(null);
   const [fileName, setFileName] = useState('');
+  const [loading, setLoading] = useState(false); // New state for loading
 
   const capture = useCallback(() => {
     const imageSrc = webcamRef.current.getScreenshot();
     setCapturedImage(imageSrc);
     let blobFile = base64toImage(imageSrc);
-    //webcamRef
-    //let blobFileName = ;
     let file = new File([blobFile], 'screenCapture.jpeg');
     setImageFile(file);
-    setFileName('screenCapture.jpeg')
+    setFileName('screenCapture.jpeg');
   }, [webcamRef]);
 
   const handleFileUpload = (event) => {
     const file = event.target.files[0];
-    
     setImageFile(file);
     setFileName(file.name);
-    console.log(file.name);
     const reader = new FileReader();
     reader.onloadend = () => {
       setCapturedImage(reader.result);
@@ -38,8 +32,7 @@ function CameraComponent() {
     }
   };
 
-
-  const base64toImage = function (image){
+  const base64toImage = function (image) {
     const byteString = atob(image.split(',')[1]);
     const ab = new ArrayBuffer(byteString.length);
     const ia = new Uint8Array(ab);
@@ -52,13 +45,11 @@ function CameraComponent() {
     return newBlob;
   };
 
-
-  const submitImage = () =>{
-
+  const submitImage = () => {
+    setLoading(true); // Set loading state to true when submitting image
     const formData = new FormData();
     var im = imageFile;
     formData.append('file', im, fileName);
-    console.log(fileName);
     
     const url = "http://localhost:5000/segment";
 
@@ -69,15 +60,21 @@ function CameraComponent() {
     })
     .then(response => {
       console.log(response.data);
+      setLoading(false); // Set loading state to false when response is received
     })
     .catch(error => {
       console.log(error);
+      setLoading(false); // Set loading state to false on error
     });
   };
 
+  const clearImage = () => {
+    setCapturedImage(null);
+    setImageFile(null);
+    setFileName('');
+  };
 
   useEffect(() => {
-    // Scroll to the photo when captured or uploaded
     const photoSection = document.getElementById('photo-section');
     if (photoSection) {
       photoSection.scrollIntoView({ behavior: 'smooth' });
@@ -105,43 +102,61 @@ function CameraComponent() {
         </div>
       </div>
       {capturedImage && (
-  <div id="photo-section" style={{ marginTop: '200px', display: 'flex', flexDirection: 'column', alignItems: 'center', zIndex: '1' }}>
-    <h2 style={{ color: '#fff', marginBottom: '10px' }}>YOUR PHOTO!</h2>
-    <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
-      <img
-        src={capturedImage}
-        alt="Captured"
-        style={{
-          width: '300px',
-          height: 'auto',
-          border: '2px solid #ccc',
-          borderRadius: '10px',
-          margin: '0 auto',
-        }}
-      />
-      <button
-        style={{
-          marginTop: '10px',
-          padding: '10px 20px',
-          fontSize: '1rem',
-          backgroundColor: '#000',
-          color: '#fff',
-          borderRadius: '5px',
-          cursor: 'pointer',
-          transition: 'background-color 0.3s ease',
-          zIndex: '1',
-        }}
-        onClick={submitImage}
-      >
-        Segment
-      </button>
+        <div id="photo-section" style={{ marginTop: '200px', display: 'flex', flexDirection: 'column', alignItems: 'center', zIndex: '1' }}>
+          <h2 style={{ color: '#fff', marginBottom: '10px' }}>YOUR PHOTO!</h2>
+          <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
+            <img
+              src={capturedImage}
+              alt="Captured"
+              style={{
+                width: '300px',
+                height: 'auto',
+                border: '2px solid #ccc',
+                borderRadius: '10px',
+                margin: '0 auto',
+              }}
+            />
+            <div style={{ display: 'flex', alignItems: 'center' }}>
+              <button
+                style={{
+                  marginTop: '10px',
+                  padding: '10px 20px',
+                  fontSize: '1rem',
+                  backgroundColor: '#000',
+                  color: '#fff',
+                  borderRadius: '5px',
+                  cursor: 'pointer',
+                  transition: 'background-color 0.3s ease',
+                  zIndex: '1',
+                }}
+                onClick={submitImage}
+                disabled={loading} // Disable button when loading
+              >
+                {loading ? 'Loading...' : 'Segment'}
+              </button>
+              <button
+                style={{
+                  marginTop: '10px',
+                  marginLeft: '10px',
+                  padding: '10px 20px',
+                  fontSize: '1rem',
+                  backgroundColor: '#ccc',
+                  color: '#000',
+                  borderRadius: '5px',
+                  cursor: 'pointer',
+                  transition: 'background-color 0.3s ease',
+                  zIndex: '1',
+                }}
+                onClick={clearImage}
+              >
+                Clear
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
-  </div>
-)}
-
- </div>
   );
 }
-
 
 export default CameraComponent;
